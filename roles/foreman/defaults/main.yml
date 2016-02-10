@@ -1,0 +1,7 @@
+---
+var_foreman_plugin_yes: true
+var_foreman_admin_password: "testme"
+var_foreman_admin_email: ""
+var_foreman_env: production
+var_foreman_name: centos.example.com
+var_foreman_url: "http://centos.example.com"

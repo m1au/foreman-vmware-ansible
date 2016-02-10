@@ -1,0 +1,53 @@
+---
+- name: Install vim and unzip and centos-release-scl - CentOS Only
+  yum: name={{item}} state=present
+  with_items:
+    - vim
+    - unzip
+    - centos-release-scl
+  when: (ansible_distribution == "CentOS" and ansible_distribution_major_version == "7")
+
+- name: Install vim and unzip and scl-utils - RedHat Only
+  yum: name={{item}} state=present
+  with_items:
+    - vim
+    - unzip
+    - scl-utils 
+    - scl-utils-build
+  when: (ansible_distribution == "RedHat" and ansible_distribution_major_version == "7")
+
+- name: Install Foreman repo.
+  yum: 
+    name: "http://yum.theforeman.org/releases/1.10/el7/x86_64/foreman-release.rpm" 
+    state: present
+  when: ansible_pkg_mgr == "yum"
+
+- name: Install Foreman1.10 installer
+  yum:
+    name: "foreman-installer"
+    state: installed
+  when: ansible_pkg_mgr == "yum"
+
+- name: install yum foreman plugins packages
+  yum: 
+    name: "{{item}}"
+    state: installed
+  with_items: 
+    - foreman-ec2
+    - foreman-cli
+    - foreman-vmware
+    - foreman-proxy
+  when: ansible_pkg_mgr == "yum"
+
+- name: configure foreman using file
+  template:
+    src: "foreman-installer-answers.yaml.j2"
+    dest: "/etc/foreman/foreman-installer-answers.yaml"
+
+- name: check if puppet/foreman was installed
+  stat: path=/var/lib/puppet/ssl/ca/inventory.txt
+  register: puppet_inventory
+
+- name: run foreman installation
+  command: /usr/sbin/foreman-installer  
+  when: puppet_inventory.stat.exists == False
