@@ -5,3 +5,5 @@ var_foreman_admin_email: ""
 var_foreman_env: production
 var_foreman_name: centos.example.com
 var_foreman_url: "http://centos.example.com"
+var_foreman_db_user: "foreman"
+var_foreman_db_password: "UJqza2k7BUCXLcbsEAjMEBxwHVzUEnVp"
